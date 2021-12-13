@@ -7,10 +7,15 @@ import (
 	"runtime"
 	"time"
 
+	goutilAppName "github.com/pobyzaarif/goutil/appname"
 	"github.com/rs/zerolog"
 )
 
-var logger zerolog.Logger
+var (
+	logger      zerolog.Logger
+	serviceName = "service_name"
+	app         = goutilAppName.GetAPPName()
+)
 
 func init() {
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
@@ -20,6 +25,7 @@ func init() {
 
 type eventLog struct {
 	event             string
+	trackerID         string
 	defaultTimerStart time.Time
 	timerStart        time.Time
 }
@@ -31,16 +37,6 @@ func NewLog(event string) eventLog {
 	}
 }
 
-func (eventLog *eventLog) Info(message string) {
-	logParams := eventLog.newLogParams(map[string]interface{}{}, nil)
-	logger.Info().Fields(logParams).Msg(message)
-}
-
-func (eventLog *eventLog) InfoWithData(message string, data map[string]interface{}) {
-	logParams := eventLog.newLogParams(data, nil)
-	logger.Info().Fields(logParams).Msg(message)
-}
-
 func (eventLog *eventLog) newLogParams(data map[string]interface{}, err error) map[string]interface{} {
 	logParams := make(map[string]interface{})
 
@@ -50,6 +46,7 @@ func (eventLog *eventLog) newLogParams(data map[string]interface{}, err error) m
 	}
 
 	logParams["event"] = eventLog.event
+	logParams["tracker_id"] = eventLog.trackerID
 
 	timeStart := eventLog.defaultTimerStart
 	if !eventLog.timerStart.IsZero() {
@@ -74,4 +71,22 @@ func (eventLog *eventLog) newLogParams(data map[string]interface{}, err error) m
 
 func (eventLog *eventLog) TimerStart() {
 	eventLog.timerStart = time.Now()
+}
+
+func (eventLog *eventLog) SetTimerStart(timeStart time.Time) {
+	eventLog.timerStart = timeStart
+}
+
+func (eventLog *eventLog) SetTrackerID(trackerID string) {
+	eventLog.trackerID = trackerID
+}
+
+func (eventLog *eventLog) Info(message string) {
+	logParams := eventLog.newLogParams(map[string]interface{}{}, nil)
+	logger.Info().Str(serviceName, app).Fields(logParams).Msg(message)
+}
+
+func (eventLog *eventLog) InfoWithData(message string, data map[string]interface{}) {
+	logParams := eventLog.newLogParams(data, nil)
+	logger.Info().Str(serviceName, serviceName).Fields(logParams).Msg(message)
 }
