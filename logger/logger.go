@@ -55,7 +55,7 @@ func (eventLog *eventLog) newLogParams(data map[string]interface{}, err error) m
 
 	logParams["timer_start"] = timeStart
 	logParams["timer_end"] = time.Now()
-	logParams["processing_time"] = time.Since(timeStart) / 1e3
+	logParams["processing_time"] = time.Since(timeStart).Nanoseconds() / int64(time.Millisecond)
 	eventLog.timerStart = time.Time{}
 
 	if data != nil {

@@ -22,7 +22,7 @@ var (
 
 func ServiceRequestTime(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		c.Request().Header.Set(headerRequestTime, time.Now().Format(time.RFC3339))
+		c.Request().Header.Set(headerRequestTime, time.Now().Format(time.RFC3339Nano))
 		return next(c)
 	}
 }
@@ -35,9 +35,9 @@ func ServiceTrackerID(next echo.HandlerFunc) echo.HandlerFunc {
 }
 
 func APILogHandler(c echo.Context, req, res []byte) {
-	c.Response().Header().Set(headerResponseTime, time.Now().Format(time.RFC3339))
-	reqTime, err := time.Parse(time.RFC3339, c.Request().Header.Get("X-Majoo-RequestTime"))
-	if err == nil {
+	c.Response().Header().Set(headerResponseTime, time.Now().Format(time.RFC3339Nano))
+	reqTime, err := time.Parse(time.RFC3339, c.Request().Header.Get(headerRequestTime))
+	if err != nil {
 		reqTime = time.Now()
 	}
 
