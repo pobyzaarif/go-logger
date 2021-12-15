@@ -65,7 +65,7 @@ func APILogHandler(c echo.Context, req, res []byte) {
 	respHeader, _ := json.Marshal(c.Response().Header())
 	reqHeader := goutilHttp.DumpRequest(c.Request(), []string{"Authorization"})
 
-	logger := goutilLogger.NewLog("inbound_api")
+	logger := goutilLogger.NewLog("inbound_request")
 	logger.SetTimerStart(reqTime)
 	logger.SetTrackerID(fmt.Sprintf("%v", c.Get("tracker_id")))
 	logger.InfoWithData("call_in", map[string]interface{}{
