@@ -88,5 +88,5 @@ func (eventLog *eventLog) Info(message string) {
 
 func (eventLog *eventLog) InfoWithData(message string, data map[string]interface{}) {
 	logParams := eventLog.newLogParams(data, nil)
-	logger.Info().Str(serviceName, serviceName).Fields(logParams).Msg(message)
+	logger.Info().Str(serviceName, app).Fields(logParams).Msg(message)
 }

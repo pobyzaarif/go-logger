@@ -36,7 +36,7 @@ func ServiceTrackerID(next echo.HandlerFunc) echo.HandlerFunc {
 
 func APILogHandler(c echo.Context, req, res []byte) {
 	c.Response().Header().Set(headerResponseTime, time.Now().Format(time.RFC3339Nano))
-	reqTime, err := time.Parse(time.RFC3339, c.Request().Header.Get(headerRequestTime))
+	reqTime, err := time.Parse(time.RFC3339Nano, c.Request().Header.Get(headerRequestTime))
 	if err != nil {
 		reqTime = time.Now()
 	}
