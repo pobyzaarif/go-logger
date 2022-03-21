@@ -67,8 +67,8 @@ func APILogHandler(c echo.Context, req, res []byte) {
 
 	logger := goutilLogger.NewLog("inbound_request")
 	logger.SetTimerStart(reqTime)
-	logger.SetTrackerID(fmt.Sprintf("%v", c.Get("tracker_id")))
 	logger.InfoWithData("call_in", map[string]interface{}{
+		"tracker_id":         fmt.Sprintf("%v", c.Get("tracker_id")),
 		"package":            packHandler,
 		"handler":            funcHandler,
 		"remote_ip":          c.RealIP(),
