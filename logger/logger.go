@@ -24,16 +24,14 @@ func init() {
 }
 
 type eventLog struct {
-	event             string
-	trackerID         string
-	defaultTimerStart time.Time
-	timerStart        time.Time
+	event      string
+	trackerID  string
+	timerStart time.Time
 }
 
 func NewLog(event string) eventLog {
 	return eventLog{
-		event:             event,
-		defaultTimerStart: time.Now(),
+		event: event,
 	}
 }
 
@@ -48,7 +46,7 @@ func (eventLog *eventLog) newLogParams(data map[string]interface{}, err error) m
 	logParams["event"] = eventLog.event
 	logParams["tracker_id"] = eventLog.trackerID
 
-	timeStart := eventLog.defaultTimerStart
+	timeStart := time.Now()
 	if !eventLog.timerStart.IsZero() {
 		timeStart = eventLog.timerStart
 	}
