@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"encoding/json"
-	"fmt"
 	"path"
 	"strings"
 	"time"
@@ -65,10 +64,11 @@ func APILogHandler(c echo.Context, req, res []byte) {
 	respHeader, _ := json.Marshal(c.Response().Header())
 	reqHeader := goutilHttp.DumpRequest(c.Request(), []string{"Authorization"})
 
+	tranckerID, _ := c.Get("tracker_id").(string)
 	logger := goutilLogger.NewLog("inbound_request")
 	logger.SetTimerStart(reqTime)
+	logger.SetTrackerID(tranckerID)
 	logger.InfoWithData("call_in", map[string]interface{}{
-		"tracker_id":         fmt.Sprintf("%v", c.Get("tracker_id")),
 		"package":            packHandler,
 		"handler":            funcHandler,
 		"remote_ip":          c.RealIP(),

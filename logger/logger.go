@@ -2,90 +2,145 @@ package logger
 
 import (
 	"fmt"
-	"os"
-	"path"
 	"runtime"
 	"time"
 
+	"github.com/labstack/gommon/log"
 	goutilAppName "github.com/pobyzaarif/goutil/appname"
-	"github.com/rs/zerolog"
 )
 
 var (
-	logger      zerolog.Logger
-	serviceName = "service_name"
-	app         = goutilAppName.GetAPPName()
+	logger = new()
+	app    = goutilAppName.GetAPPName()
 )
 
-func init() {
-	zerolog.SetGlobalLevel(zerolog.InfoLevel)
-	zerolog.TimeFieldFormat = "2006-01-02T15:04:05.000000"
-	logger = zerolog.New(os.Stderr).With().Timestamp().Logger()
+func new() *log.Logger {
+	l := log.New("")
+	l.DisableColor()
+	l.SetHeader(`{"time":"${time_rfc3339_nano}","level":"${level}"}`)
+	return l
 }
 
-type eventLog struct {
-	event      string
+type newLog struct {
+	tag        string
 	trackerID  string
+	Caller     string // for manipulate or customizing caller value
 	timerStart time.Time
 }
 
-func NewLog(event string) eventLog {
-	return eventLog{
-		event: event,
+func NewLog(tag string) newLog {
+	return newLog{
+		tag: tag,
 	}
 }
 
-func (eventLog *eventLog) newLogParams(data map[string]interface{}, err error) map[string]interface{} {
+func (newLog *newLog) newLogParams(message string, data map[string]interface{}, err error) map[string]interface{} {
 	logParams := make(map[string]interface{})
 
-	_, file, line, ok := runtime.Caller(2)
-	if ok {
-		data["caller"] = fmt.Sprintf("%v:%v", path.Base(file), line)
+	if newLog.Caller == "" {
+		_, file, line, ok := runtime.Caller(2)
+		if ok {
+			logParams["caller"] = fmt.Sprintf("%v:%v", file, line)
+		} else {
+			logParams["caller"] = ""
+		}
+	} else {
+		logParams["caller"] = newLog.Caller
 	}
 
-	logParams["event"] = eventLog.event
-	logParams["tracker_id"] = eventLog.trackerID
+	logParams["service_name"] = app
+	logParams["message"] = message
+	logParams["tag"] = newLog.tag
+	logParams["tracker_id"] = newLog.trackerID
 
 	timeStart := time.Now()
-	if !eventLog.timerStart.IsZero() {
-		timeStart = eventLog.timerStart
+	if !newLog.timerStart.IsZero() {
+		timeStart = newLog.timerStart
 	}
 
 	elapsed := time.Since(timeStart)
 	logParams["timer_start"] = timeStart
 	logParams["timer_end"] = time.Now()
 	logParams["processing_time"] = float64(elapsed.Nanoseconds() / 1e6)
-	eventLog.timerStart = time.Time{}
+	newLog.timerStart = time.Time{}
 
 	if data != nil {
 		logParams["data"] = data
+	} else {
+		logParams["data"] = make(map[string]interface{})
 	}
 
 	if err != nil {
 		logParams["error"] = err.Error()
+	} else {
+		logParams["error"] = ""
 	}
 
 	return logParams
 }
 
-func (eventLog *eventLog) TimerStart() {
-	eventLog.timerStart = time.Now()
+func (newLog *newLog) TimerStart() {
+	newLog.timerStart = time.Now()
 }
 
-func (eventLog *eventLog) SetTimerStart(timeStart time.Time) {
-	eventLog.timerStart = timeStart
+func (newLog *newLog) SetTimerStart(timeStart time.Time) {
+	newLog.timerStart = timeStart
 }
 
-func (eventLog *eventLog) SetTrackerID(trackerID string) {
-	eventLog.trackerID = trackerID
+func (newLog *newLog) SetTrackerID(trackerID string) {
+	newLog.trackerID = trackerID
 }
 
-func (eventLog *eventLog) Info(message string) {
-	logParams := eventLog.newLogParams(map[string]interface{}{}, nil)
-	logger.Info().Str(serviceName, app).Fields(logParams).Msg(message)
+func (newLog *newLog) SetCallerValue(caller string) {
+	newLog.Caller = caller
 }
 
-func (eventLog *eventLog) InfoWithData(message string, data map[string]interface{}) {
-	logParams := eventLog.newLogParams(data, nil)
-	logger.Info().Str(serviceName, app).Fields(logParams).Msg(message)
+func (newLog *newLog) Info(message string) {
+	logParams := newLog.newLogParams(message, nil, nil)
+	logger.Infoj(logParams)
+}
+
+func (newLog *newLog) InfoWithData(message string, data map[string]interface{}) {
+	logParams := newLog.newLogParams(message, data, nil)
+	logger.Infoj(logParams)
+}
+
+func (newLog *newLog) Warn(message string) {
+	logParams := newLog.newLogParams(message, nil, nil)
+	logger.Warnj(logParams)
+}
+
+func (newLog *newLog) WarnWithData(message string, data map[string]interface{}) {
+	logParams := newLog.newLogParams(message, data, nil)
+	logger.Warnj(logParams)
+}
+
+func (newLog *newLog) WarnWithDataAndError(message string, data map[string]interface{}, err error) {
+	logParams := newLog.newLogParams(message, data, err)
+	logger.Warnj(logParams)
+}
+
+func (newLog *newLog) Error(message string, err error) {
+	logParams := newLog.newLogParams(message, nil, err)
+	logger.Errorj(logParams)
+}
+
+func (newLog *newLog) ErrorWithData(message string, data map[string]interface{}, err error) {
+	logParams := newLog.newLogParams(message, data, err)
+	logger.Errorj(logParams)
+}
+
+func (newLog *newLog) Fatal(message string) {
+	logParams := newLog.newLogParams(message, nil, nil)
+	logger.Fatalj(logParams)
+}
+
+func (newLog *newLog) FatalWithData(message string, data map[string]interface{}) {
+	logParams := newLog.newLogParams(message, data, nil)
+	logger.Fatalj(logParams)
+}
+
+func (newLog *newLog) FatalWithDataAndError(message string, data map[string]interface{}, err error) {
+	logParams := newLog.newLogParams(message, data, err)
+	logger.Fatalj(logParams)
 }

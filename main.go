@@ -6,7 +6,7 @@ import (
 	"github.com/pobyzaarif/goutil/logger"
 )
 
-var log = logger.NewLog("main")
+var log = logger.NewLog("MAIN")
 
 func main() {
 	log.Info("hello")
