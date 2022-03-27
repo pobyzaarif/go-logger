@@ -118,11 +118,6 @@ func (l *logger) LogMode(level lg.LogLevel) lg.Interface {
 }
 
 // Info print info
-func (l logger) SetTrackerID(trackerID string) context.Context {
-	return context.WithValue(context.Background(), "tracker_id", trackerID)
-}
-
-// Info print info
 func (l logger) Info(ctx context.Context, msg string, data ...interface{}) {
 	if l.LogLevel >= lg.Info {
 		l.Printf(l.infoStr+msg, append([]interface{}{utils.FileWithLineNum()}, data...)...)
@@ -151,7 +146,7 @@ func (l logger) Trace(ctx context.Context, begin time.Time, fc func() (string, i
 		trackerID = fmt.Sprintf("%v", ctxTrackerID)
 	}
 
-	logger := goutilLogger.NewLog("gorm_query")
+	logger := goutilLogger.NewLog("GORM_QUERY")
 	logger.SetCallerValue(utils.FileWithLineNum())
 	logger.SetTrackerID(trackerID)
 	logger.SetTimerStart(begin)
@@ -206,7 +201,7 @@ func (l logger) Trace(ctx context.Context, begin time.Time, fc func() (string, i
 		sql, rows := fc()
 		if rows == -1 {
 			logger.InfoWithData(
-				"info_query",
+				"query_info",
 				map[string]interface{}{
 					"rows":  "-",
 					"query": sql,
@@ -214,7 +209,7 @@ func (l logger) Trace(ctx context.Context, begin time.Time, fc func() (string, i
 			)
 		} else {
 			logger.InfoWithData(
-				"info_query",
+				"query_info",
 				map[string]interface{}{
 					"rows":  rows,
 					"query": sql,

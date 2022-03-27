@@ -65,20 +65,17 @@ func APILogHandler(c echo.Context, req, res []byte) {
 	reqHeader := goutilHttp.DumpRequest(c.Request(), []string{"Authorization"})
 
 	tranckerID, _ := c.Get("tracker_id").(string)
-	logger := goutilLogger.NewLog("inbound_request")
+	logger := goutilLogger.NewLog("INBOUND_REQUEST")
 	logger.SetTimerStart(reqTime)
 	logger.SetTrackerID(tranckerID)
-	logger.InfoWithData("call_in", map[string]interface{}{
-		"package":            packHandler,
+	logger.InfoWithData("api_info", map[string]interface{}{
 		"handler":            funcHandler,
 		"remote_ip":          c.RealIP(),
 		"host":               c.Request().Host,
 		"method":             c.Request().Method,
 		"url":                c.Request().RequestURI,
-		"request_time":       c.Request().Header.Get(headerRequestTime),
 		"request_header":     reqHeader,
 		"request":            string(req),
-		"response_time":      c.Response().Header().Get(headerResponseTime),
 		"response_header":    string(respHeader),
 		"response":           string(res),
 		"response_http_code": c.Response().Status,
