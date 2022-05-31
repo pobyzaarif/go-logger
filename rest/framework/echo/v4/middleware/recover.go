@@ -5,7 +5,7 @@ import (
 	"runtime"
 
 	"github.com/labstack/echo/v4"
-	goutilLogger "github.com/pobyzaarif/goutil/logger"
+	goLogger "github.com/pobyzaarif/go-logger/logger"
 )
 
 type (
@@ -83,7 +83,7 @@ func recoverWithConfig(config RecoverConfig) echo.MiddlewareFunc {
 					length := runtime.Stack(stack, !config.DisableStackAll)
 					if !config.DisablePrintStack {
 						tranckerID, _ := c.Get("tracker_id").(string)
-						logger := goutilLogger.NewLog("PANIC")
+						logger := goLogger.NewLog("PANIC")
 						logger.SetTrackerID(tranckerID)
 
 						msg := fmt.Sprintf("[PANIC RECOVER] %v %s\n", err, stack[:length])

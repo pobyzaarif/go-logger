@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	goutilLogger "github.com/pobyzaarif/goutil/logger"
+	goLogger "github.com/pobyzaarif/go-logger/logger"
 	"go.mongodb.org/mongo-driver/event"
 )
 
@@ -17,7 +17,7 @@ func Monitor() *event.CommandMonitor {
 				trackerID = fmt.Sprintf("%v", ctxTrackerID)
 			}
 
-			logger := goutilLogger.NewLog("MONGO_COMMAND")
+			logger := goLogger.NewLog("MONGO_COMMAND")
 			logger.SetTrackerID(trackerID)
 
 			logger.InfoWithData("command_info", map[string]interface{}{

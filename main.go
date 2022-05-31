@@ -3,7 +3,7 @@ package main
 import (
 	"time"
 
-	"github.com/pobyzaarif/goutil/logger"
+	"github.com/pobyzaarif/go-logger/logger"
 )
 
 var log = logger.NewLog("MAIN")

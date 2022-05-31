@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
 
-	goutilLogger "github.com/pobyzaarif/goutil/logger"
+	goLogger "github.com/pobyzaarif/go-logger/logger"
 	lg "gorm.io/gorm/logger"
 	"gorm.io/gorm/utils"
 )
@@ -146,7 +146,7 @@ func (l logger) Trace(ctx context.Context, begin time.Time, fc func() (string, i
 		trackerID = fmt.Sprintf("%v", ctxTrackerID)
 	}
 
-	logger := goutilLogger.NewLog("GORM_QUERY")
+	logger := goLogger.NewLog("GORM_QUERY")
 	logger.SetCallerValue(utils.FileWithLineNum())
 	logger.SetTrackerID(trackerID)
 	logger.SetTimerStart(begin)

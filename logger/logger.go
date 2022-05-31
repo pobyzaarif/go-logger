@@ -6,12 +6,12 @@ import (
 	"time"
 
 	"github.com/labstack/gommon/log"
-	goutilAppName "github.com/pobyzaarif/goutil/appname"
+	goLoggerAppName "github.com/pobyzaarif/go-logger/appname"
 )
 
 var (
 	logger = new()
-	app    = goutilAppName.GetAPPName()
+	app    = goLoggerAppName.GetAPPName()
 )
 
 func new() *log.Logger {

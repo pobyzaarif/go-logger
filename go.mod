@@ -1,4 +1,4 @@
-module github.com/pobyzaarif/goutil
+module github.com/pobyzaarif/go-logger
 
 go 1.17
 

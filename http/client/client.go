@@ -12,8 +12,8 @@ import (
 	"time"
 
 	xmlToJson "github.com/basgys/goxml2json"
-	goutilHttp "github.com/pobyzaarif/goutil/http"
-	goutilLogger "github.com/pobyzaarif/goutil/logger"
+	goLoggerHttp "github.com/pobyzaarif/go-logger/http"
+	goLogger "github.com/pobyzaarif/go-logger/logger"
 )
 
 type (
@@ -32,7 +32,7 @@ const (
 	XMLResponseBodyFormat
 )
 
-var logger = goutilLogger.NewLog("OUTBOUND_REQUEST")
+var logger = goLogger.NewLog("OUTBOUND_REQUEST")
 
 func Call(
 	ctx context.Context,
@@ -55,7 +55,7 @@ func Call(
 		"host":               request.URL.Host,
 		"method":             request.Method,
 		"url":                request.URL.Path,
-		"request":            goutilHttp.DumpRequest(request, []string{"Authorization"}),
+		"request":            goLoggerHttp.DumpRequest(request, []string{"Authorization"}),
 		"response":           "",
 		"response_http_code": 0,
 	}
@@ -75,7 +75,7 @@ func Call(
 
 	res, err := client.Do(request)
 
-	httpLog["response"] = goutilHttp.DumpResponse(res)
+	httpLog["response"] = goLoggerHttp.DumpResponse(res)
 
 	if err != nil {
 		errMessage := "error is " + err.Error()

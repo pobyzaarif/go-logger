@@ -8,13 +8,13 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
-	goutilAppName "github.com/pobyzaarif/goutil/appname"
-	goutilHttp "github.com/pobyzaarif/goutil/http"
-	goutilLogger "github.com/pobyzaarif/goutil/logger"
+	goLoggerAppName "github.com/pobyzaarif/go-logger/appname"
+	goLoggerHttp "github.com/pobyzaarif/go-logger/http"
+	goLogger "github.com/pobyzaarif/go-logger/logger"
 )
 
 var (
-	app                = goutilAppName.GetAPPName()
+	app                = goLoggerAppName.GetAPPName()
 	headerRequestTime  = "X-" + app + "-RequestTime"
 	headerResponseTime = "X-" + app + "-ResponseTime"
 )
@@ -62,10 +62,10 @@ func APILogHandler(c echo.Context, req, res []byte) {
 	funcHandler := strings.Replace(handler, packHandler+".", "", -1)
 
 	respHeader, _ := json.Marshal(c.Response().Header())
-	reqHeader := goutilHttp.DumpRequest(c.Request(), []string{"Authorization"})
+	reqHeader := goLoggerHttp.DumpRequest(c.Request(), []string{"Authorization"})
 
 	tranckerID, _ := c.Get("tracker_id").(string)
-	logger := goutilLogger.NewLog("INBOUND_REQUEST")
+	logger := goLogger.NewLog("INBOUND_REQUEST")
 	logger.SetTimerStart(reqTime)
 	logger.SetTrackerID(tranckerID)
 	logger.InfoWithData("api_info", map[string]interface{}{
