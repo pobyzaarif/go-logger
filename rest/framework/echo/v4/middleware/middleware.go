@@ -68,7 +68,7 @@ func APILogHandler(c echo.Context, req, res []byte) {
 	logger := goLogger.NewLog("INBOUND_REQUEST")
 	logger.SetTimerStart(reqTime)
 	logger.SetTrackerID(tranckerID)
-	logger.InfoWithData("api_info", map[string]interface{}{
+	logger.InfoWithData("api_info", goLoggerHttp.NetworkLog(map[string]interface{}{
 		"handler":            funcHandler,
 		"remote_ip":          c.RealIP(),
 		"host":               c.Request().Host,
@@ -79,5 +79,5 @@ func APILogHandler(c echo.Context, req, res []byte) {
 		"response_header":    string(respHeader),
 		"response":           string(res),
 		"response_http_code": c.Response().Status,
-	})
+	}))
 }

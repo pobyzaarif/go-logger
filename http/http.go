@@ -44,3 +44,11 @@ func DumpResponse(resp *http.Response) string {
 	}
 	return string(responseDump)
 }
+
+// NetworkLog : network log wrapper
+func NetworkLog(data map[string]interface{}) map[string]interface{} {
+	return map[string]interface{}{
+		"__gologger__": 1,
+		"net":          data,
+	}
+}

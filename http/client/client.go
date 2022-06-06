@@ -63,7 +63,7 @@ func Call(
 	if proxyConfig != nil {
 		proxyUrl, err := url.Parse(fmt.Sprintf("http://%s:%d", proxyConfig.Host, proxyConfig.Port))
 		if err != nil {
-			logger.ErrorWithData("failed to parse proxy url", httpLog, err)
+			logger.ErrorWithData("failed to parse proxy url", goLoggerHttp.NetworkLog(httpLog), err)
 
 			return -1, errors.New("failed to parse proxy url")
 		}
@@ -81,12 +81,12 @@ func Call(
 		errMessage := "error is " + err.Error()
 		urlErr, ok := err.(*url.Error)
 		if ok && urlErr.Timeout() {
-			logger.ErrorWithData("timeout on request", httpLog, urlErr)
+			logger.ErrorWithData("timeout on request", goLoggerHttp.NetworkLog(httpLog), urlErr)
 
 			return 0, errors.New(errMessage)
 		}
 
-		logger.ErrorWithData("failed on request", httpLog, urlErr)
+		logger.ErrorWithData("failed on request", goLoggerHttp.NetworkLog(httpLog), urlErr)
 
 		return 0, errors.New(errMessage)
 	}
@@ -94,6 +94,8 @@ func Call(
 	defer res.Body.Close()
 
 	httpLog["response_http_code"] = res.StatusCode
+	httpLog = goLoggerHttp.NetworkLog(httpLog) // wrapping logger to standart network log
+
 	buffer, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		logger.ErrorWithData("failed to get response body", httpLog, err)

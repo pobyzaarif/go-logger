@@ -65,7 +65,15 @@ func (newLog *newLog) newLogParams(message string, data map[string]interface{}, 
 	newLog.timerStart = time.Time{}
 
 	if data != nil {
-		logParams["data"] = data
+		// detect which one is gologger default
+		if def, _ := data["__gologger__"].(int); def > 0 {
+			delete(data, "__gologger__")
+			logParams["data"] = data
+		} else {
+			logParams["data"] = map[string]interface{}{
+				"app": data,
+			}
+		}
 	} else {
 		logParams["data"] = make(map[string]interface{})
 	}

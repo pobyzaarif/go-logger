@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	goLoggerDB "github.com/pobyzaarif/go-logger/database"
 	goLogger "github.com/pobyzaarif/go-logger/logger"
 	"go.mongodb.org/mongo-driver/event"
 )
@@ -17,12 +18,12 @@ func Monitor() *event.CommandMonitor {
 				trackerID = fmt.Sprintf("%v", ctxTrackerID)
 			}
 
-			logger := goLogger.NewLog("MONGO_COMMAND")
+			logger := goLogger.NewLog("MONGO_QUERY")
 			logger.SetTrackerID(trackerID)
 
-			logger.InfoWithData("command_info", map[string]interface{}{
-				"command": evt.Command.String(),
-			})
+			logger.InfoWithData("query_info", goLoggerDB.DatabaseLog(map[string]interface{}{
+				"query": evt.Command.String(),
+			}))
 		},
 	}
 }

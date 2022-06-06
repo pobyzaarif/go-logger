@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	goLoggerDB "github.com/pobyzaarif/go-logger/database"
 	goLogger "github.com/pobyzaarif/go-logger/logger"
 	lg "gorm.io/gorm/logger"
 	"gorm.io/gorm/utils"
@@ -162,19 +163,19 @@ func (l logger) Trace(ctx context.Context, begin time.Time, fc func() (string, i
 		if rows == -1 {
 			logger.ErrorWithData(
 				"query_error",
-				map[string]interface{}{
+				goLoggerDB.DatabaseLog(map[string]interface{}{
 					"rows":  "-",
 					"query": sql,
-				},
+				}),
 				err,
 			)
 		} else {
 			logger.ErrorWithData(
 				"error_query",
-				map[string]interface{}{
+				goLoggerDB.DatabaseLog(map[string]interface{}{
 					"rows":  rows,
 					"query": sql,
-				},
+				}),
 				err,
 			)
 		}
@@ -183,18 +184,18 @@ func (l logger) Trace(ctx context.Context, begin time.Time, fc func() (string, i
 		if rows == -1 {
 			logger.WarnWithData(
 				"warn_slow_query",
-				map[string]interface{}{
+				goLoggerDB.DatabaseLog(map[string]interface{}{
 					"rows":  "-",
 					"query": sql,
-				},
+				}),
 			)
 		} else {
 			logger.WarnWithData(
 				"warn_slow_query",
-				map[string]interface{}{
+				goLoggerDB.DatabaseLog(map[string]interface{}{
 					"rows":  rows,
 					"query": sql,
-				},
+				}),
 			)
 		}
 	case l.LogLevel == lg.Info:
@@ -202,18 +203,18 @@ func (l logger) Trace(ctx context.Context, begin time.Time, fc func() (string, i
 		if rows == -1 {
 			logger.InfoWithData(
 				"query_info",
-				map[string]interface{}{
+				goLoggerDB.DatabaseLog(map[string]interface{}{
 					"rows":  "-",
 					"query": sql,
-				},
+				}),
 			)
 		} else {
 			logger.InfoWithData(
 				"query_info",
-				map[string]interface{}{
+				goLoggerDB.DatabaseLog(map[string]interface{}{
 					"rows":  rows,
 					"query": sql,
-				},
+				}),
 			)
 		}
 	}

@@ -88,9 +88,13 @@ func recoverWithConfig(config RecoverConfig) echo.MiddlewareFunc {
 
 						msg := fmt.Sprintf("[PANIC RECOVER] %v %s\n", err, stack[:length])
 
-						logger.ErrorWithData("PANIC", map[string]interface{}{
-							"trace": msg,
-						}, err)
+						panicLog := map[string]interface{}{
+							"__gologger__": 1,
+							"panic": map[string]interface{}{
+								"trace": msg,
+							},
+						}
+						logger.ErrorWithData("PANIC", panicLog, err)
 					}
 					c.Error(err)
 				}
