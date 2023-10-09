@@ -1,6 +1,6 @@
 module github.com/pobyzaarif/go-logger
 
-go 1.17
+go 1.20
 
 require (
 	github.com/basgys/goxml2json v1.1.0
